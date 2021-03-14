@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<main class="mt-5 pt-4">
+  <div class="container wow fadeIn">
+
+    <!-- Heading -->
+    <h2 class="my-5 h2 text-center">Payment</h2>
+
+    <!--Grid row-->
+    <div class="row">
+
+      <!--Grid column-->
+      <div class="col-md-12 mb-4">
+
+        <!--Card-->
+        <div class="card">
+
+            <section class="container-lg">
+                <div class="common-Card">
+                  <h3 class="common-UppercaseTitle">Stripe Elements</h3>
+                  <h1 class="common-PageTitle">Build beautiful, smart checkout flows</h1>
+                  <p class="common-IntroText">Stripe Elements are rich, prebuilt UI components that help you create your own pixel-perfect checkout flows across desktop and&nbsp;mobile.</p>
+                  <p class="common-ButtonGroup">
+                    <a href="https://stripe.dev/elements-examples/" class="common-Button common-Button--default elements-Button--icon" data-analytics-action="elements_examples" data-analytics-source="header_cta">
+                      Try it out
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 19 19"><path d="M9.5 0C4.3 0 0 4.4 0 9.7c0 4.3 2.7 8 6.5 9.2.5.1.6-.2.6-.5v-1.7c-2.6.6-3.2-1.3-3.2-1.3-.4-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .8 1.5 2.2 1.1 2.8.8.1-.6.3-1.1.6-1.3-2.1-.1-4.4-.9-4.4-4.7 0-1.1.4-1.9 1-2.6-.1-.2-.4-1.2.1-2.6 0 0 .8-.3 2.6 1 .8-.2 1.6-.3 2.4-.3.8 0 1.6.1 2.4.3 1.8-1.3 2.6-1 2.6-1 .5 1.3.2 2.3.1 2.6.6.7 1 1.6 1 2.6 0 3.7-2.2 4.6-4.3 4.8.3.3.6.9.6 1.8v2.7c0 .3.2.6.7.5 3.7-1.3 6.4-5 6.4-9.3C19 4.4 14.7 0 9.5 0z" fill="#FFF"></path></svg>
+                    </a>
+                    <a href="/docs/stripe-js" class="common-Button" data-analytics-action="elements_docs" data-analytics-source="header_cta">
+                      Explore the docs
+                    </a>
+                  </p>
+                </div>
+                <div class="example-form" style="transform: scale(0.921212); margin-bottom: -9.15152px;">
+                  <!--Static elements-->
+                  <div class="static-elements-container container1">
+                    <div class="field-background background1"></div>
+                    <div class="field-background background2"></div>
+                    <div class="field-separator separator1"></div>
+                    <div class="field-separator separator2"></div>
+                  </div>
+                  <div class="static-elements-container container2">
+                    <div class="field-background background1"></div>
+                    <div class="field-background background2"></div>
+                    <div class="field-background background3"></div>
+                    <div class="field-background background4"></div>
+                    <div class="field-background background5"></div>
+                    <div class="field-background background6"></div>
+                    <div class="field-background background7"></div>
+                  </div>
+                  <div class="static-elements-container container3">
+                    <div class="field-background background1"></div>
+                    <div class="field-background background2"></div>
+                    <div class="field-background background3"></div>
+                    <div class="field-background background4"></div>
+                    <div class="field-background background5"></div>
+                    <div class="field-background background6"></div>
+                    <div class="field-background background7"></div>
+                  </div>
+                  <div class="static-elements-container container4">
+                    <div class="field-background background1"></div>
+                    <div class="selected-amount-highlight"></div>
+                    <div class="apple-pay-button">Donate with</div>
+                    <div class="field-group-background"></div>
+                    <div class="field-group-label">Or pay with card</div>
+                    <div class="field-background background2"></div>
+                  </div>
+                  <!--Field labels-->
+                  <div class="field-label label1">
+                    <span data-example="2">Address</span>
+                  </div>
+                  <div class="field-label label2">
+                    <span data-example="1">Name</span>
+                    <span data-example="2">City</span>
+                  </div>
+                  <div class="field-label label3">
+                    <span data-example="1">Email</span>
+                    <span data-example="2">State</span>
+                  </div>
+                  <div class="field-label label4">
+                    <span data-example="1">Phone</span>
+                    <span data-example="2">Zip Code</span>
+                  </div>
+                  <div class="field-label label5">
+                    <span data-example="2">Card Number</span>
+                  </div>
+                  <div class="field-label label6">
+                    <span data-example="2">Expiration</span>
+                  </div>
+                  <!--Field values-->
+                  <div class="field-value value1">
+                    <span data-example="4">$1</span>
+                  </div>
+                  <div class="field-value value2">
+                    <span data-example="4">$5</span>
+                  </div>
+                  <div class="field-value value3">
+                    <span data-example="1">Jane Doe</span>
+                    <span data-example="2">185 Berry St</span>
+                    <span data-example="3">Jane Doe</span>
+                    <span data-example="4">$20</span>
+                  </div>
+                  <div class="field-value value4">
+                    <span data-example="1">janedoe@gmail.com</span>
+                    <span data-example="2">San Francisco</span>
+                    <span data-example="3">janedoe@gmail.com</span>
+                    <span data-example="4">$50</span>
+                  </div>
+                  <div class="field-value value5">
+                    <span data-example="1">(941) 555-0123</span>
+                    <span data-example="2">CA</span>
+                    <span data-example="3">(941) 555-0123</span>
+                    <span data-example="4">$100</span>
+                  </div>
+                  <div class="field-value value6">
+                    <span data-example="1">4242</span>
+                    <span data-example="2">5200 8282 8282 8210</span>
+                    <span data-example="3">6011 0009 9013 9424</span>
+                    <span data-example="4">98431</span>
+                  </div>
+                  <div class="field-value value7">
+                    <span data-example="1">MM/YY</span>
+                    <span data-example="2">MM/YY</span>
+                    <span data-example="3">MM/YY</span>
+                    <span data-example="4">MM/YY</span>
+                  </div>
+                  <div class="field-value value8">
+                    <span data-example="1">CVC</span>
+                    <span data-example="2">CVC</span>
+                    <span data-example="3">CVC</span>
+                    <span data-example="4">CVC</span>
+                  </div>
+                  <div class="field-value value9">
+                    <span data-example="1">ZIP</span>
+                    <span data-example="2">94107</span>
+                    <span data-example="3">ZIP Code</span>
+                    <span data-example="4">ZIP</span>
+                  </div>
+                  <!--Card icon-->
+                  <div class="card-icon">
+                    <img data-example="1" src="/img/v3/elements/overview/visa.svg">
+                    <img data-example="2" src="/img/v3/elements/overview/mastercard.svg">
+                    <img data-example="3" src="/img/v3/elements/overview/discover.svg">
+                    <img data-example="4" src="/img/v3/elements/overview/amex.svg">
+                  </div>
+                  <!--Pay button-->
+                  <div class="pay-button">
+                    <span data-example="1">Pay $25</span>
+                    <span data-example="2">Pay $25</span>
+                    <span data-example="3">Pay $25</span>
+                    <span data-example="4">Donate $5</span>
+                  </div>
+                  <!--Carat-->
+                  <div class="carat" data-example="1,2,3,4"></div>
+                </div>
+              </section>
+        </div>
+        <!--/.Card-->
+
+      </div>
+      <!--Grid column-->
+
+    </div>
+    <!--Grid row-->
+
+  </div>
+</main>
+{% endblock content %}
