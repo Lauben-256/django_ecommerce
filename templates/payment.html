@@ -1,169 +1,346 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags %}
-
+hello
 {% block content %}
-<main class="mt-5 pt-4">
-  <div class="container wow fadeIn">
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>JS Bin</title>
+  <link rel="stylesheet" href="/global.css">
+  <script src="https://js.stripe.com/v3/"></script>
+
+  <style>
+  /* Variables */
+ /* * {
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    height: 100vh;
+    width: 100vw;
+  }  */
+  
+  form {
+    width: 100vw;
+    margin: auto 5rem;
+    margin-top: 5rem;
+    display: inline-block;
+    width: 30vw;
+    justify-content: center;
+    align-items: center;
+    min-width: 500px;
+    align-self: center;
+    box-shadow: 0px 0px 0px 0.5px rgba(50, 50, 93, 0.1),
+      0px 2px 5px 0px rgba(50, 50, 93, 0.1), 0px 1px 1.5px 0px rgba(0, 0, 0, 0.07);
+    border-radius: 7px;
+    padding: 40px;
+  }
+  
+  input {
+    border-radius: 6px;
+    margin-bottom: 6px;
+    padding: 12px;
+    border: 1px solid rgba(50, 50, 93, 0.1);
+    height: 44px;
+    font-size: 16px;
+    width: 100%;
+    background: white;
+  }
+  
+  .result-message {
+    line-height: 22px;
+    font-size: 16px;
+  }
+  
+  .result-message a {
+    color: rgb(89, 111, 214);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  
+  .hidden {
+    display: none;
+  }
+  
+  #card-error {
+    color: rgb(105, 115, 134);
+    text-align: left;
+    font-size: 13px;
+    line-height: 17px;
+    margin-top: 12px;
+  }
+  
+  #card-element {
+    border-radius: 4px 4px 0 0 ;
+    padding: 12px;
+    border: 1px solid rgba(50, 50, 93, 0.1);
+    height: 44px;
+    width: 100%;
+    background: white;
+  }
+  
+  #payment-request-button {
+    margin-bottom: 32px;
+  }
+  
+  /* Buttons and links */
+  button {
+    background: #5469d4;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    border-radius: 0 0 4px 4px;
+    border: 0;
+    padding: 12px 16px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: block;
+    transition: all 0.2s ease;
+    box-shadow: 0px 4px 5.5px 0px rgba(0, 0, 0, 0.07);
+    width: 100%;
+  }
+  button:hover {
+    filter: contrast(115%);
+  }
+  button:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+  
+  /* spinner/processing state, errors */
+  .spinner,
+  .spinner:before,
+  .spinner:after {
+    border-radius: 50%;
+  }
+  .spinner {
+    color: #ffffff;
+    font-size: 22px;
+    text-indent: -99999px;
+    margin: 0px auto;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    box-shadow: inset 0 0 0 2px;
+    -webkit-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+  .spinner:before,
+  .spinner:after {
+    position: absolute;
+    content: "";
+  }
+  .spinner:before {
+    width: 10.4px;
+    height: 20.4px;
+    background: #5469d4;
+    border-radius: 20.4px 0 0 20.4px;
+    top: -0.2px;
+    left: -0.2px;
+    -webkit-transform-origin: 10.4px 10.2px;
+    transform-origin: 10.4px 10.2px;
+    -webkit-animation: loading 2s infinite ease 1.5s;
+    animation: loading 2s infinite ease 1.5s;
+  }
+  .spinner:after {
+    width: 10.4px;
+    height: 10.2px;
+    background: #5469d4;
+    border-radius: 0 10.2px 10.2px 0;
+    top: -0.1px;
+    left: 10.2px;
+    -webkit-transform-origin: 0px 10.2px;
+    transform-origin: 0px 10.2px;
+    -webkit-animation: loading 2s infinite ease;
+    animation: loading 2s infinite ease;
+  }
+  
+  @-webkit-keyframes loading {
+    0% {
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes loading {
+    0% {
+      -webkit-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+  
+  @media only screen and (max-width: 600px) {
+    form {
+      width: 80vw;
+    }
+  }
+  
+  </style>
+</head>
+<body>
+
+<div class="row ">
+  <div class="col-md-12 mb-4">
+    <!-- <form action="/charge" method="post" id="payment-form" style="width: 70vw;"> -->
+    <form action="." method="POST" id="payment-form" style="width: 70vw;">
+      {% csrf_token %}
+      <div class="form-row">
+        <label for="card-element">
+          Credit or debit card
+        </label>
+        <div id="card-element">
+          <!-- a Stripe Element will be inserted here. -->
+        </div>
+    
+        <!-- Used to display form errors -->
+        <div id="card-errors"></div>
+      </div>
+      <button>Submit Payment</button>
+    </form>
+  </div>
+  <!--Grid column-->
+  <div class="col-md-10 mb-4 ml-5" class="width: 70vw;">
 
     <!-- Heading -->
-    <h2 class="my-5 h2 text-center">Payment</h2>
+    <h4 class="d-flex justify-content-between align-items-center mb-3">
+      <span class="text-muted">Your cart</span>
+      <span class="badge badge-secondary badge-pill">3</span>
+    </h4>
 
-    <!--Grid row-->
-    <div class="row">
-
-      <!--Grid column-->
-      <div class="col-md-12 mb-4">
-
-        <!--Card-->
-        <div class="card">
-
-            <section class="container-lg">
-                <div class="common-Card">
-                  <h3 class="common-UppercaseTitle">Stripe Elements</h3>
-                  <h1 class="common-PageTitle">Build beautiful, smart checkout flows</h1>
-                  <p class="common-IntroText">Stripe Elements are rich, prebuilt UI components that help you create your own pixel-perfect checkout flows across desktop and&nbsp;mobile.</p>
-                  <p class="common-ButtonGroup">
-                    <a href="https://stripe.dev/elements-examples/" class="common-Button common-Button--default elements-Button--icon" data-analytics-action="elements_examples" data-analytics-source="header_cta">
-                      Try it out
-                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 19 19"><path d="M9.5 0C4.3 0 0 4.4 0 9.7c0 4.3 2.7 8 6.5 9.2.5.1.6-.2.6-.5v-1.7c-2.6.6-3.2-1.3-3.2-1.3-.4-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .8 1.5 2.2 1.1 2.8.8.1-.6.3-1.1.6-1.3-2.1-.1-4.4-.9-4.4-4.7 0-1.1.4-1.9 1-2.6-.1-.2-.4-1.2.1-2.6 0 0 .8-.3 2.6 1 .8-.2 1.6-.3 2.4-.3.8 0 1.6.1 2.4.3 1.8-1.3 2.6-1 2.6-1 .5 1.3.2 2.3.1 2.6.6.7 1 1.6 1 2.6 0 3.7-2.2 4.6-4.3 4.8.3.3.6.9.6 1.8v2.7c0 .3.2.6.7.5 3.7-1.3 6.4-5 6.4-9.3C19 4.4 14.7 0 9.5 0z" fill="#FFF"></path></svg>
-                    </a>
-                    <a href="/docs/stripe-js" class="common-Button" data-analytics-action="elements_docs" data-analytics-source="header_cta">
-                      Explore the docs
-                    </a>
-                  </p>
-                </div>
-                <div class="example-form" style="transform: scale(0.921212); margin-bottom: -9.15152px;">
-                  <!--Static elements-->
-                  <div class="static-elements-container container1">
-                    <div class="field-background background1"></div>
-                    <div class="field-background background2"></div>
-                    <div class="field-separator separator1"></div>
-                    <div class="field-separator separator2"></div>
-                  </div>
-                  <div class="static-elements-container container2">
-                    <div class="field-background background1"></div>
-                    <div class="field-background background2"></div>
-                    <div class="field-background background3"></div>
-                    <div class="field-background background4"></div>
-                    <div class="field-background background5"></div>
-                    <div class="field-background background6"></div>
-                    <div class="field-background background7"></div>
-                  </div>
-                  <div class="static-elements-container container3">
-                    <div class="field-background background1"></div>
-                    <div class="field-background background2"></div>
-                    <div class="field-background background3"></div>
-                    <div class="field-background background4"></div>
-                    <div class="field-background background5"></div>
-                    <div class="field-background background6"></div>
-                    <div class="field-background background7"></div>
-                  </div>
-                  <div class="static-elements-container container4">
-                    <div class="field-background background1"></div>
-                    <div class="selected-amount-highlight"></div>
-                    <div class="apple-pay-button">Donate with</div>
-                    <div class="field-group-background"></div>
-                    <div class="field-group-label">Or pay with card</div>
-                    <div class="field-background background2"></div>
-                  </div>
-                  <!--Field labels-->
-                  <div class="field-label label1">
-                    <span data-example="2">Address</span>
-                  </div>
-                  <div class="field-label label2">
-                    <span data-example="1">Name</span>
-                    <span data-example="2">City</span>
-                  </div>
-                  <div class="field-label label3">
-                    <span data-example="1">Email</span>
-                    <span data-example="2">State</span>
-                  </div>
-                  <div class="field-label label4">
-                    <span data-example="1">Phone</span>
-                    <span data-example="2">Zip Code</span>
-                  </div>
-                  <div class="field-label label5">
-                    <span data-example="2">Card Number</span>
-                  </div>
-                  <div class="field-label label6">
-                    <span data-example="2">Expiration</span>
-                  </div>
-                  <!--Field values-->
-                  <div class="field-value value1">
-                    <span data-example="4">$1</span>
-                  </div>
-                  <div class="field-value value2">
-                    <span data-example="4">$5</span>
-                  </div>
-                  <div class="field-value value3">
-                    <span data-example="1">Jane Doe</span>
-                    <span data-example="2">185 Berry St</span>
-                    <span data-example="3">Jane Doe</span>
-                    <span data-example="4">$20</span>
-                  </div>
-                  <div class="field-value value4">
-                    <span data-example="1">janedoe@gmail.com</span>
-                    <span data-example="2">San Francisco</span>
-                    <span data-example="3">janedoe@gmail.com</span>
-                    <span data-example="4">$50</span>
-                  </div>
-                  <div class="field-value value5">
-                    <span data-example="1">(941) 555-0123</span>
-                    <span data-example="2">CA</span>
-                    <span data-example="3">(941) 555-0123</span>
-                    <span data-example="4">$100</span>
-                  </div>
-                  <div class="field-value value6">
-                    <span data-example="1">4242</span>
-                    <span data-example="2">5200 8282 8282 8210</span>
-                    <span data-example="3">6011 0009 9013 9424</span>
-                    <span data-example="4">98431</span>
-                  </div>
-                  <div class="field-value value7">
-                    <span data-example="1">MM/YY</span>
-                    <span data-example="2">MM/YY</span>
-                    <span data-example="3">MM/YY</span>
-                    <span data-example="4">MM/YY</span>
-                  </div>
-                  <div class="field-value value8">
-                    <span data-example="1">CVC</span>
-                    <span data-example="2">CVC</span>
-                    <span data-example="3">CVC</span>
-                    <span data-example="4">CVC</span>
-                  </div>
-                  <div class="field-value value9">
-                    <span data-example="1">ZIP</span>
-                    <span data-example="2">94107</span>
-                    <span data-example="3">ZIP Code</span>
-                    <span data-example="4">ZIP</span>
-                  </div>
-                  <!--Card icon-->
-                  <div class="card-icon">
-                    <img data-example="1" src="/img/v3/elements/overview/visa.svg">
-                    <img data-example="2" src="/img/v3/elements/overview/mastercard.svg">
-                    <img data-example="3" src="/img/v3/elements/overview/discover.svg">
-                    <img data-example="4" src="/img/v3/elements/overview/amex.svg">
-                  </div>
-                  <!--Pay button-->
-                  <div class="pay-button">
-                    <span data-example="1">Pay $25</span>
-                    <span data-example="2">Pay $25</span>
-                    <span data-example="3">Pay $25</span>
-                    <span data-example="4">Donate $5</span>
-                  </div>
-                  <!--Carat-->
-                  <div class="carat" data-example="1,2,3,4"></div>
-                </div>
-              </section>
+    <!-- Cart -->
+    <ul class="list-group mb-3 z-depth-1">
+      <li class="list-group-item d-flex justify-content-between lh-condensed">
+        <div>
+          <h6 class="my-0">Product name</h6>
+          <small class="text-muted">Brief description</small>
         </div>
-        <!--/.Card-->
-
-      </div>
-      <!--Grid column-->
-
-    </div>
-    <!--Grid row-->
+        <span class="text-muted">$12</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between lh-condensed">
+        <div>
+          <h6 class="my-0">Second product</h6>
+          <small class="text-muted">Brief description</small>
+        </div>
+        <span class="text-muted">$8</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between lh-condensed">
+        <div>
+          <h6 class="my-0">Third item</h6>
+          <small class="text-muted">Brief description</small>
+        </div>
+        <span class="text-muted">$5</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between bg-light">
+        <div class="text-success">
+          <h6 class="my-0">Promo code</h6>
+          <small>EXAMPLECODE</small>
+        </div>
+        <span class="text-success">-$5</span>
+      </li>
+      <li class="list-group-item d-flex justify-content-between">
+        <span>Total (USD)</span>
+        <strong>$20</strong>
+      </li>
+    </ul>
+    <!-- Cart -->
 
   </div>
-</main>
+<!--Grid column-->
+</div>
+
+
+
+</body>
+<script type="text/javascript">
+
+
+//Create a Stripe client
+var stripe = Stripe('pk_test_51IMnLHFTiAaBFtb8MIVp4gVwZ5dYdQ46IsoX40idoq1FsbJWItxbPMcmTUKBy7WkzVQZ0F9yraIWkWiKqRonX8qp00TOP8J3dJ');
+
+// Create an instance of Elements
+var elements = stripe.elements();
+
+// Custom styling can be passed to options when creating an Element.
+// (Note that this demo uses a wider set of styles than the guide below.)
+var style = {
+  base: {
+    color: '#32325d',
+    lineHeight: '24px',
+    fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+    fontSmoothing: 'antialiased',
+    fontSize: '16px',
+    '::placeholder': {
+      color: '#aab7c4'
+    }
+  },
+  invalid: {
+    color: '#fa755a',
+    iconColor: '#fa755a'
+  }
+};
+
+
+// Create an instance of the card Element
+var card = elements.create('card', {style: style});
+
+// Add an instance of the card Element into the `card-element` <div>
+card.mount('#card-element');
+
+// Handle real-time validation errors from the card Element.
+card.addEventListener('change', function(event) {
+  var displayError = document.getElementById('card-errors');
+  if (event.error) {
+    displayError.textContent = event.error.message;
+  } else {
+    displayError.textContent = '';
+  }
+});
+
+// Handle form submission
+var form = document.getElementById('payment-form');
+form.addEventListener('submit', function(event) {
+  event.preventDefault();
+
+  stripe.createToken(card).then(function(result) {
+    if (result.error) {
+      // Inform the user if there was an error
+      var errorElement = document.getElementById('card-errors');
+      errorElement.textContent = result.error.message;
+    } else {
+      // Send the token to your server
+      stripeTokenHandler(result.token);
+    }
+  });
+});  
+  
+function stripeTokenHandler(token) {
+  // Insert the token ID into the form so it gets submitted to the server
+  var form = document.getElementById('payment-form');
+  var hiddenInput = document.createElement('input');
+  hiddenInput.setAttribute('type', 'hidden');
+  hiddenInput.setAttribute('name', 'stripeToken');
+  hiddenInput.setAttribute('value', token.id);
+  form.appendChild(hiddenInput);
+
+  // Submit the form, uncomment
+  alert("Created a token with value: "+token.id)
+  form.submit();
+}   
+</script>
+</html>
 {% endblock content %}

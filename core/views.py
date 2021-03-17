@@ -1,21 +1,23 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
+import stripe
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic import ListView, DetailView, View
-
+from django.conf import settings
 from .forms import CheckoutForm
-from .models import Item, Order, OrderItem, BillingAddress
+from .models import Item, Order, OrderItem, BillingAddress, Payment
 
 # Create your views here.
-
+stripe.api_key = 'sk_test_51IMnLHFTiAaBFtb8PqOxEN9D03gOTgz2ZQva6PmNhqf39ubmb5mSb7kG0idath9r99YpaKhrH6Zk6p6oObkE9d9n00m3H3o3qG'
 
 class HomeView(ListView):
     model = Item
     paginate_by = 10
     template_name = 'home.html'
+    ordering = ['id']
 
 # def home(request):
     # context = {'items': Item.objects.all()}
@@ -78,8 +80,79 @@ class CheckoutView(View):
 
 class PaymentView(View):
     def get(self, *args, **kwargs):
+        #order 
         return render(self.request, 'payment.html')
 
+    def post(self, *args, **kwargs):
+
+        # `source` is obtained with Stripe.js; see https://stripe.com/docs/payments/accept-a-payment-charges#web-create-token
+        order = Order.objects.get(user=self.request.user, ordered=False)
+        token = self.request.POST.get('stripeToken')
+        amount=int(order.get_total() * 100), # cents
+
+        try:
+            # Use Stripe's library to make requests...
+            charge = stripe.Charge.create(
+                    amount=amount,
+                    currency="usd",
+                    source=token,
+                    description="My First Test Charge (created for API docs)",
+                )
+
+            # create the payment
+            payment = Payment()
+            payment.stripe_charge_id = charge['id']
+            payment.user = self.request.user
+            payment.amount = order.get_total()
+            payment.save()
+
+            # assign the payment to the order
+            order.ordered = True
+            order.payment = payment
+            order.save()
+            messages.success(self.request, "Your order was successful!.")
+            return redirect('/')
+
+        except stripe.error.CardError as e:
+            # Since it's a decline, stripe.error.CardError will be caught
+            body = e.json_body
+            err = body.get('error', {})
+            messages.error(self.request, f"{err.get('message')}")
+            return redirect('/')
+
+        except stripe.error.RateLimitError as e:
+            # Too many requests made to the API too quickly
+            messages.error(self.request, "Rate Limit Error")
+            return redirect('/')
+
+        except stripe.error.InvalidRequestError as e:
+            # Invalid parameters were supplied to Stripe's API
+            messages.error(self.request, "Invalid Parameters.")
+            return redirect('/')
+
+        except stripe.error.AuthenticationError as e:
+            # Authentication with Stripe's API failed
+            # (maybe you changed API keys recently)
+            messages.error(self.request, "Not Authenticated.")
+            return redirect('/')
+
+        except stripe.error.APIConnectionError as e:
+            # Network communication with Stripe failed
+            messages.error(self.request, "Network Error.")
+            return redirect('/')
+
+        except stripe.error.StripeError as e:
+            # Display a very generic error to the user, and maybe send
+            # yourself an email
+            messages.error(self.request, "Something went wrong. You were not charged. Please try again.")
+            return redirect('/')
+
+        except Exception as e:
+            # Something else happened, completely unrelated to Stripe
+            # Send an email to ourselves
+
+            messages.error(self.request, "A serious error occurred. We have been notified.")
+            return redirect('/')
 
 class ItemDetailView(DetailView):
     model = Item
