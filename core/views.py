@@ -88,12 +88,12 @@ class PaymentView(View):
         # `source` is obtained with Stripe.js; see https://stripe.com/docs/payments/accept-a-payment-charges#web-create-token
         order = Order.objects.get(user=self.request.user, ordered=False)
         token = self.request.POST.get('stripeToken')
-        amount=int(order.get_total() * 100), # cents
+        amount=2000, # cents
 
         try:
             # Use Stripe's library to make requests...
             charge = stripe.Charge.create(
-                    amount=amount,
+                    amount=2000, # There is a problem here, 
                     currency="usd",
                     source=token,
                     description="My First Test Charge (created for API docs)",
